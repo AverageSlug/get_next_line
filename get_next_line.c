@@ -6,11 +6,11 @@
 /*   By: nlaurids <nlaurids@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 14:15:54 by nlaurids          #+#    #+#             */
-/*   Updated: 2021/10/05 18:07:38 by nlaurids         ###   ########.fr       */
+/*   Updated: 2021/10/05 18:11:19 by nlaurids         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/cub3d.h"
+#include "get_next_line.h"
 
 int		ft_strlen(char *str)
 {
@@ -19,6 +19,17 @@ int		ft_strlen(char *str)
 	i = 0;
 	while (str[i])
 		i++;
+	return (i);
+}
+
+int		freeturn(char **line, int ret)
+{
+	if (line)
+	{
+		free(*line);
+		*line = NULL;
+	}
+	return (ret);
 }
 
 char	*ft_memcat(char *line, char rest[BUFFER_SIZE + 1])
