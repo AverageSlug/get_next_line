@@ -3,14 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nlaurids <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: nlaurids <nlaurids@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 14:15:54 by nlaurids          #+#    #+#             */
-/*   Updated: 2020/02/18 18:14:50 by nlaurids         ###   ########.fr       */
+/*   Updated: 2021/10/05 18:07:38 by nlaurids         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "../includes/cub3d.h"
+
+int		ft_strlen(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+		i++;
+}
 
 char	*ft_memcat(char *line, char rest[BUFFER_SIZE + 1])
 {
@@ -22,7 +31,7 @@ char	*ft_memcat(char *line, char rest[BUFFER_SIZE + 1])
 	j = 0;
 	if (!(temp = malloc(sizeof(char) * (ft_strlen(line) + ft_strlen(rest)
 						+ 1))))
-		return (NULL);
+		return (0);
 	while (line[i])
 	{
 		temp[i] = line[i];
@@ -30,11 +39,7 @@ char	*ft_memcat(char *line, char rest[BUFFER_SIZE + 1])
 	}
 	free(line);
 	while (rest[j] && rest[j] != '\n')
-	{
-		temp[i] = rest[j];
-		i++;
-		j++;
-	}
+		temp[i++] = rest[j++];
 	temp[i] = '\0';
 	return (temp);
 }
@@ -66,14 +71,15 @@ int		ft_reader(int fd, char buf[BUFFER_SIZE + 1],
 	return (-1);
 }
 
-void	ft_completeline(char **line, char rest[BUFFER_SIZE + 1])
+int		ft_completeline(char **line, char rest[BUFFER_SIZE + 1])
 {
 	int		i;
 	int		j;
 
 	i = 0;
 	j = 0;
-	*line = ft_memcat(*line, rest);
+	if (!(*line = ft_memcat(*line, rest)))
+		return (freeturn(line, 0));
 	while (rest[i] && rest[i] != '\n')
 		i++;
 	if (rest[i] == '\n')
@@ -85,6 +91,7 @@ void	ft_completeline(char **line, char rest[BUFFER_SIZE + 1])
 		j++;
 	}
 	rest[j] = '\0';
+	return (1);
 }
 
 int		ft_checkifendofline(char rest[BUFFER_SIZE + 1])
@@ -112,10 +119,11 @@ int		get_next_line(int fd, char **line)
 	**line = '\0';
 	while (!ft_checkifendofline(rest[fd]))
 	{
-		ft_completeline(line, rest[fd]);
+		if (!ft_completeline(line, rest[fd]))
+			return (-1);
 		ret = ft_reader(fd, buf, rest[fd]);
 		if (ret < 0)
-			return (-1);
+			return (freeturn(line, -1));
 		if (ret == 0)
 			return (0);
 	}
